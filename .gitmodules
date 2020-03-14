@@ -1,0 +1,3 @@
+[submodule "SDFGen"]
+	path = SDFGen
+	url = https://github.com/christopherbatty/SDFGen
