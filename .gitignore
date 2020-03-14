@@ -1,0 +1,11 @@
+*~
+pysdfgen/SDFGen
+_skbuild
+*.egg/
+*.egg-info/
+*.pyc
+\#*\#
+.\#*
+/build/
+/dist/
+/src/
