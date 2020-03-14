@@ -2,6 +2,7 @@
 .gitmodules
 .travis.yml
 CMakeLists.txt
+MANIFEST
 README.md
 SDFGen/CMakeLists.txt
 SDFGen/README.md
