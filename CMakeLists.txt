@@ -1,24 +1,27 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-project(SDFGen)
+cmake_minimum_required(VERSION 2.4.6)
+Project("SDFGen")
 
+# Set the build type.  Options are:
+#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
+#  Debug          : w/ debug symbols, w/o optimization
+#  Release        : w/o debug symbols, w/ optimization
+#  RelWithDebInfo : w/ debug symbols, w/ optimization
+#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
+
+# SET(CMAKE_BUILD_TYPE Coverage)
 SET(CMAKE_BUILD_TYPE Release)
 
 #set the default path for built executables to the "bin" directory
-# set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 #These flags might not work on every system, especially the release flags, comment out as needed
 set(CMAKE_CXX_FLAGS "-O3")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -msse4.2 -mfpmath=sse -mtune=native")
 
-#Generates config.h replacing expressions in config.h.in with actual values
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/SDFGen/config.h.in"
-  "${CMAKE_CURRENT_SOURCE_DIR}/SDFGen/config.h"
-)
 
 add_executable(${PROJECT_NAME}
-  SDFGen/main.cpp
-  SDFGen/makelevelset3.cpp)
+  SDFGen/main.cpp  SDFGen/makelevelset3.cpp SDFGen/array1.h  SDFGen/array2.h  SDFGen/array3.h  SDFGen/hashgrid.h  SDFGen/hashtable.h SDFGen/makelevelset3.h  SDFGen/util.h  SDFGen/vec.h
+  )
 
-install(TARGETS SDFGen DESTINATION pysdfgen)
+install(TARGETS ${PROJECT_NAME} DESTINATION pysdfgen)
