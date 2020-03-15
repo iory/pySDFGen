@@ -16,7 +16,9 @@ def obj2sdf(obj_filepath, dim=100, padding=5):
     obj_filepath = str(obj_filepath)
     parent = osp.dirname(obj_filepath)
     basename = osp.basename(obj_filepath)
-    stem, _ = osp.splitext(basename)
+    stem, ext = osp.splitext(basename)
+    if ext != '.obj':
+        raise ValueError("The input file name should end with '.obj'.")
     sdf_filepath = osp.join(parent, stem + ".sdf")
     p = subprocess.Popen(
         [SDFGen_executable,
