@@ -4,6 +4,12 @@ import pkg_resources
 import os.path as osp
 import subprocess
 
+try:
+    from subprocess import DEVNULL
+except ImportError:
+    import os
+    DEVNULL = open(os.devnull, 'wb')
+
 
 __version__ = pkg_resources.get_distribution('pysdfgen').version
 
@@ -25,6 +31,6 @@ def obj2sdf(obj_filepath, dim=100, padding=5):
          str(obj_filepath),
          str(dim),
          str(padding)],
-        stdout=subprocess.DEVNULL)
+        stdout=DEVNULL)
     p.wait()
     return osp.join(parent, sdf_filepath)
