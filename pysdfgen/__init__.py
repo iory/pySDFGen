@@ -19,6 +19,17 @@ SDFGen_executable = osp.join(
 
 
 def obj2sdf(obj_filepath, dim=100, padding=5):
+    """Convert .obj to .sdf file.
+
+    Parameters
+    ----------
+    obj_filepath : str or pathlib.Path
+        filepath of .obj.
+    dim : int
+        dimension number.
+    padding : int
+        padding.
+    """
     obj_filepath = str(obj_filepath)
     parent = osp.dirname(obj_filepath)
     basename = osp.basename(obj_filepath)
