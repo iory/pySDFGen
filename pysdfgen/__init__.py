@@ -26,9 +26,9 @@ def obj2sdf(obj_filepath, dim=100, padding=5):
     obj_filepath : str or pathlib.Path
         filepath of .obj.
     dim : int
-        dimension number.
+        number of sdf dimension.
     padding : int
-        padding.
+        number of padding.
     """
     obj_filepath = str(obj_filepath)
     parent = osp.dirname(obj_filepath)
