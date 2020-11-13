@@ -1,6 +1,7 @@
 *~
 pysdfgen/SDFGen
 _skbuild
+*.sdf
 *.egg/
 *.egg-info/
 *.pyc
@@ -9,3 +10,4 @@ _skbuild
 /build/
 /dist/
 /src/
+/bin/
