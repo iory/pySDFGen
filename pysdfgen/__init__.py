@@ -62,5 +62,5 @@ def obj2sdf(obj_filepath, dim=100, padding=5,
     p.wait()
 
     # becuase the output destination of SDFGen can't be specified...
-    os.replace(default_sdf_filepath, sdf_filepath)
+    os.rename(default_sdf_filepath, sdf_filepath)
     return sdf_filepath
