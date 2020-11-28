@@ -1,3 +1,4 @@
+import os
 import os.path as osp
 import pkg_resources
 import subprocess
@@ -38,11 +39,14 @@ def obj2sdf(obj_filepath, dim=100, padding=5,
     _, ext = osp.splitext(obj_filepath)
     if ext != '.obj':
         raise ValueError("The input file name should end with '.obj'.")
+
+    parent = osp.dirname(obj_filepath)
+    basename = osp.basename(obj_filepath)
+    stem, _ = osp.splitext(basename)
+    default_sdf_filepath = osp.join(parent, stem + ".sdf")
+
     if output_filepath is None:
-        parent = osp.dirname(obj_filepath)
-        basename = osp.basename(obj_filepath)
-        stem, _ = osp.splitext(basename)
-        sdf_filepath = osp.join(parent, stem + ".sdf")
+        sdf_filepath = default_sdf_filepath
     else:
         sdf_filepath = output_filepath
 
@@ -56,4 +60,7 @@ def obj2sdf(obj_filepath, dim=100, padding=5,
          str(padding)],
         stdout=DEVNULL)
     p.wait()
+
+    # becuase the output destination of SDFGen can't be specified...
+    os.replace(default_sdf_filepath, sdf_filepath)
     return sdf_filepath
