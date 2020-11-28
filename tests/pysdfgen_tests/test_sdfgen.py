@@ -46,7 +46,7 @@ class TestSDFGen(unittest.TestCase):
                                       output_filepath=another_bunny_sdfpath,
                                       overwrite=True)
         self.assertEqual(another_output_path, another_bunny_sdfpath)
-        assert os.path.exists(another_bunny_sdfpath)
+        self.assertTrue(os.path.exists(another_bunny_sdfpath))
 
         with self.assertRaises(OSError):
             obj2sdf(bunny_objpath,
