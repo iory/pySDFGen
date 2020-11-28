@@ -1,7 +1,7 @@
-import os
 import os.path as osp
-import pkg_resources
 import subprocess
+
+import pkg_resources
 
 try:
     from subprocess import DEVNULL
