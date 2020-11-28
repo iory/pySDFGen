@@ -1,7 +1,5 @@
-# flake8: noqa
-
-import pkg_resources
 import os.path as osp
+import pkg_resources
 import subprocess
 
 try:
