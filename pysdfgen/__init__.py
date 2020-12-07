@@ -1,3 +1,4 @@
+import os
 import os.path as osp
 import subprocess
 
@@ -6,7 +7,6 @@ import pkg_resources
 try:
     from subprocess import DEVNULL
 except ImportError:
-    import os
     DEVNULL = open(os.devnull, 'wb')
 
 
