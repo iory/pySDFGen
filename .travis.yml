@@ -13,10 +13,12 @@ addons:
 
 install:
   - pip install --upgrade pip setuptools wheel
+  - pip install .
 
 script:
   - pip install hacking pytest
   - flake8 .
+  - pytest -v tests
 
 sudo: false
 
