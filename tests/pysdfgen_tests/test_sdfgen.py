@@ -63,3 +63,12 @@ class TestSDFGen(unittest.TestCase):
         output_path = obj2sdf(gripper_stlpath, dim=dim)
         self.assertEqual(output_path, gripper_sdfpath)
         self.assertTrue(osp.exists(output_path))
+
+        if osp.exists(another_gripper_sdfpath):
+            os.remove(another_gripper_sdfpath)
+        another_output_path = obj2sdf(
+            gripper_stlpath,
+            output_filepath=another_gripper_sdfpath,
+            dim=dim)
+        self.assertEqual(another_output_path, another_gripper_sdfpath)
+        self.assertTrue(osp.exists(another_output_path))
