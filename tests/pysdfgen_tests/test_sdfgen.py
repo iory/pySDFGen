@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import unittest
 
+from pysdfgen import mesh2sdf
 from pysdfgen import obj2sdf
 
 current_dir = osp.abspath(osp.dirname(__file__))
@@ -20,53 +21,62 @@ if not os.path.exists(another_data_dir):
 class TestSDFGen(unittest.TestCase):
 
     def test_obj2sdf(self):
+        # deprecated
         dim = 10
         if osp.exists(bunny_sdfpath):
             os.remove(bunny_sdfpath)
         output_path = obj2sdf(bunny_objpath, dim=dim)
         self.assertEqual(output_path, bunny_sdfpath)
+        os.remove(bunny_sdfpath)
 
-        output_path = obj2sdf(bunny_objpath, dim=dim, overwrite=True)
+    def test_mesh2sdf(self):
+        dim = 10
+        if osp.exists(bunny_sdfpath):
+            os.remove(bunny_sdfpath)
+        output_path = mesh2sdf(bunny_objpath, dim=dim)
+        self.assertEqual(output_path, bunny_sdfpath)
+
+        output_path = mesh2sdf(bunny_objpath, dim=dim, overwrite=True)
         self.assertEqual(output_path, bunny_sdfpath)
 
         with self.assertRaises(OSError):
-            obj2sdf(bunny_objpath, overwrite=False)
+            mesh2sdf(bunny_objpath, overwrite=False)
 
-        output_path = obj2sdf(bunny_objpath,
-                              dim=dim,
-                              output_filepath=bunny_sdfpath,
-                              overwrite=True)
+        output_path = mesh2sdf(bunny_objpath,
+                               dim=dim,
+                               output_filepath=bunny_sdfpath,
+                               overwrite=True)
         self.assertEqual(output_path, bunny_sdfpath)
 
         with self.assertRaises(OSError):
-            obj2sdf(bunny_objpath,
-                    output_filepath=bunny_sdfpath,
-                    overwrite=False)
+            mesh2sdf(bunny_objpath,
+                     output_filepath=bunny_sdfpath,
+                     overwrite=False)
 
         # testing the case when a custom output path is specified
-        another_output_path = obj2sdf(bunny_objpath,
-                                      dim=dim,
-                                      output_filepath=another_bunny_sdfpath,
-                                      overwrite=True)
+        another_output_path = mesh2sdf(bunny_objpath,
+                                       dim=dim,
+                                       output_filepath=another_bunny_sdfpath,
+                                       overwrite=True)
         self.assertEqual(another_output_path, another_bunny_sdfpath)
         self.assertTrue(os.path.exists(another_bunny_sdfpath))
 
         with self.assertRaises(OSError):
-            obj2sdf(bunny_objpath,
-                    dim=dim,
-                    output_filepath=another_bunny_sdfpath,
-                    overwrite=False)
+            mesh2sdf(bunny_objpath,
+                     dim=dim,
+                     output_filepath=another_bunny_sdfpath,
+                     overwrite=False)
 
         # testing the case when a file is not an obj file
         if osp.exists(gripper_sdfpath):
             os.remove(gripper_sdfpath)
-        output_path = obj2sdf(gripper_stlpath, dim=dim)
+        output_path = mesh2sdf(gripper_stlpath, dim=dim)
         self.assertEqual(output_path, gripper_sdfpath)
         self.assertTrue(osp.exists(output_path))
 
         if osp.exists(another_gripper_sdfpath):
             os.remove(another_gripper_sdfpath)
-        another_output_path = obj2sdf(
+        another_output_path = mesh2sdf(
             gripper_stlpath,
             output_filepath=another_gripper_sdfpath,
             dim=dim)

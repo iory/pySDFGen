@@ -3,6 +3,7 @@ import os.path as osp
 import shutil
 import subprocess
 import tempfile
+import warnings
 
 import pkg_resources
 
@@ -21,15 +22,27 @@ SDFGen_executable = osp.join(
     osp.abspath(osp.dirname(__file__)), 'SDFGen')
 
 
-def obj2sdf(mesh_filepath, dim=100, padding=5,
-            output_filepath=None,
-            overwrite=False):
-    """Convert .obj to .sdf file.
+def obj2sdf(*args, **kwargs):
+    """Convert obj to sdf file.
+
+    Deprecated.
+    Use `pysdfgen.mesh2sdf` instead.
+    """
+    warnings.warn(
+        'obj2sdf is deprecated. Use mesh2sdf instead.',
+        DeprecationWarning)
+    return mesh2sdf(*args, **kwargs)
+
+
+def mesh2sdf(mesh_filepath, dim=100, padding=5,
+             output_filepath=None,
+             overwrite=False):
+    """Convert mesh file to sdf file.
 
     Parameters
     ----------
     mesh_filepath : str or pathlib.Path
-        filepath of .obj or other formats that trimesh supports.
+        filepath of mesh formats that trimesh supports.
     dim : int
         number of sdf dimension.
     padding : int
@@ -38,7 +51,7 @@ def obj2sdf(mesh_filepath, dim=100, padding=5,
         output filepath
     overwrite : bool
         if `True`, overwrite sdf file.
-     """
+    """
     mesh_filepath = str(mesh_filepath)
     _, ext = osp.splitext(mesh_filepath)
 
