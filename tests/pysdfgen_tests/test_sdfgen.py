@@ -1,6 +1,5 @@
 import os
 import os.path as osp
-import shutil
 import unittest
 
 from pysdfgen import obj2sdf
@@ -61,11 +60,6 @@ class TestSDFGen(unittest.TestCase):
         # testing the case when a file is not an obj file
         if osp.exists(gripper_sdfpath):
             os.remove(gripper_sdfpath)
-        output_path = obj2sdf(gripper_stlpath)
+        output_path = obj2sdf(gripper_stlpath, dim=dim)
         self.assertEqual(output_path, gripper_sdfpath)
         self.assertTrue(osp.exists(output_path))
-
-    def tearDown(self):
-        shutil.rmtree(another_data_dir)
-        os.remove(bunny_sdfpath)
-        os.remove(gripper_sdfpath)

@@ -31,11 +31,11 @@ if sys.argv[-1] == 'release':
     sys.exit(0)
 
 setup_requires = [
-    'trimesh'
 ]
 
 install_requires = [
     'scikit-build',
+    'trimesh>=3.5.20'
 ]
 
 setup_params = dict(
