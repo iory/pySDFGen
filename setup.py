@@ -31,6 +31,7 @@ if sys.argv[-1] == 'release':
     sys.exit(0)
 
 setup_requires = [
+    'trimesh'
 ]
 
 install_requires = [
