@@ -12,18 +12,10 @@ version = '0.1.4'
 
 
 if sys.argv[-1] == 'release':
-    if not distutils.spawn.find_executable('twine'):
-        print(
-            'Please install twine:\n\n\tpip install twine\n',
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
+    # Release via github-actions.
     commands = [
         'git tag v{:s}'.format(version),
         'git push origin master --tag',
-        'python setup.py sdist',
-        'twine upload dist/pysdfgen-{:s}.tar.gz'.format(version),
     ]
     for cmd in commands:
         print('+ {}'.format(cmd))
