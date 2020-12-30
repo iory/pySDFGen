@@ -35,6 +35,7 @@ setup_requires = [
 
 install_requires = [
     'scikit-build',
+    'trimesh>=3.5.20'
 ]
 
 setup_params = dict(

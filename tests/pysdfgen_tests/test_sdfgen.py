@@ -7,9 +7,12 @@ from pysdfgen import obj2sdf
 current_dir = osp.abspath(osp.dirname(__file__))
 bunny_objpath = osp.join(current_dir, 'data', 'bunny.obj')
 bunny_sdfpath = osp.join(current_dir, 'data', 'bunny.sdf')
+gripper_stlpath = osp.join(current_dir, 'data', 'gripper.stl')
+gripper_sdfpath = osp.join(current_dir, 'data', 'gripper.sdf')
 
 another_data_dir = osp.join(current_dir, "tmp")
 another_bunny_sdfpath = osp.join(another_data_dir, 'bunny.sdf')
+another_gripper_sdfpath = osp.join(another_data_dir, 'gripper.sdf')
 if not os.path.exists(another_data_dir):
     os.makedirs(another_data_dir)
 
@@ -53,3 +56,19 @@ class TestSDFGen(unittest.TestCase):
                     dim=dim,
                     output_filepath=another_bunny_sdfpath,
                     overwrite=False)
+
+        # testing the case when a file is not an obj file
+        if osp.exists(gripper_sdfpath):
+            os.remove(gripper_sdfpath)
+        output_path = obj2sdf(gripper_stlpath, dim=dim)
+        self.assertEqual(output_path, gripper_sdfpath)
+        self.assertTrue(osp.exists(output_path))
+
+        if osp.exists(another_gripper_sdfpath):
+            os.remove(another_gripper_sdfpath)
+        another_output_path = obj2sdf(
+            gripper_stlpath,
+            output_filepath=another_gripper_sdfpath,
+            dim=dim)
+        self.assertEqual(another_output_path, another_gripper_sdfpath)
+        self.assertTrue(osp.exists(another_output_path))
