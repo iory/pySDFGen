@@ -3,6 +3,7 @@ import os.path as osp
 import shutil
 import subprocess
 import tempfile
+import warnings
 
 import pkg_resources
 
@@ -21,15 +22,27 @@ SDFGen_executable = osp.join(
     osp.abspath(osp.dirname(__file__)), 'SDFGen')
 
 
-def obj2sdf(mesh_filepath, dim=100, padding=5,
-            output_filepath=None,
-            overwrite=False):
-    """Convert .obj to .sdf file.
+def obj2sdf(*args, **kwargs):
+    """Convert obj to sdf file.
+
+    Deprecated.
+    Use `pysdfgen.mesh2sdf` instead.
+    """
+    warnings.warn(
+        'obj2sdf is deprecated. Use mesh2sdf instead.',
+        DeprecationWarning)
+    return mesh2sdf(*args, **kwargs)
+
+
+def mesh2sdf(mesh_filepath, dim=100, padding=5,
+             output_filepath=None,
+             overwrite=False):
+    """Convert mesh file to sdf file.
 
     Parameters
     ----------
     mesh_filepath : str or pathlib.Path
-        filepath of .obj or other formats that trimesh supports.
+        filepath of mesh formats that trimesh supports.
     dim : int
         number of sdf dimension.
     padding : int
@@ -38,7 +51,7 @@ def obj2sdf(mesh_filepath, dim=100, padding=5,
         output filepath
     overwrite : bool
         if `True`, overwrite sdf file.
-     """
+    """
     mesh_filepath = str(mesh_filepath)
     _, ext = osp.splitext(mesh_filepath)
 
@@ -48,23 +61,17 @@ def obj2sdf(mesh_filepath, dim=100, padding=5,
     default_sdf_filepath = osp.join(parent, stem + ".sdf")
 
     is_obj_file = ext == '.obj'
-    if not is_obj_file:
+    if is_obj_file:
+        obj_filepath = mesh_filepath
+    else:
+        # create temporary directory and save obj file.
         tmp_directory = tempfile.mkdtemp()
         tmp_obj_filepath = osp.join(tmp_directory, 'tmp.obj')
         tmp_sdf_filepath = osp.join(tmp_directory, 'tmp.sdf')
 
         mesh = trimesh.load_mesh(mesh_filepath)
-        V = mesh.vertices
-        F = mesh.faces
-        with open(tmp_obj_filepath, mode='w') as f:
-            for vert in V:
-                f.write("v {0} {1} {2}\n".format(vert[0], vert[1], vert[2]))
-            for face_ in F:
-                face = face_ + 1  # in trimesh index starts from 0
-                f.write("f {0} {1} {2}\n".format(face[0], face[1], face[2]))
+        trimesh.exchange.export.export_mesh(mesh, tmp_obj_filepath)
         obj_filepath = tmp_obj_filepath
-    else:
-        obj_filepath = mesh_filepath
 
     if output_filepath is None:
         sdf_filepath = default_sdf_filepath
@@ -82,10 +89,10 @@ def obj2sdf(mesh_filepath, dim=100, padding=5,
         stdout=DEVNULL)
     p.wait()
 
-    if not is_obj_file:
-        os.rename(tmp_sdf_filepath, sdf_filepath)
-        shutil.rmtree(tmp_directory)
-    else:
+    if is_obj_file:
         # becuase the output destination of SDFGen can't be specified...
         os.rename(default_sdf_filepath, sdf_filepath)
+    else:
+        os.rename(tmp_sdf_filepath, sdf_filepath)
+        shutil.rmtree(tmp_directory)
     return sdf_filepath

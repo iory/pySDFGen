@@ -12,7 +12,7 @@ pip install pysdfgen
 
 ```
 $ python
->>> from pysdfgen import obj2sdf
->>> obj2sdf('./examples/bunny.obj')
+>>> from pysdfgen import mesh2sdf
+>>> mesh2sdf('./examples/bunny.obj')
 # ./examples/bunny.sdf will be created.
 ```
