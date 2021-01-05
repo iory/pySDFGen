@@ -5,6 +5,7 @@ import unittest
 from pysdfgen import mesh2sdf
 from pysdfgen import obj2sdf
 
+
 current_dir = osp.abspath(osp.dirname(__file__))
 bunny_objpath = osp.join(current_dir, 'data', 'bunny.obj')
 bunny_sdfpath = osp.join(current_dir, 'data', 'bunny.sdf')

@@ -6,8 +6,8 @@ import tempfile
 import warnings
 
 import pkg_resources
-
 import trimesh
+
 
 try:
     from subprocess import DEVNULL
