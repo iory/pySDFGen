@@ -77,7 +77,7 @@ def get_or_install(name, version=None):
         # valid names & versions are ASCII as per PEP 440
         subprocess.check_output(
             [sys.executable,
-             "-m", "pip", "list", "--format", "json"]).decode('ascii'))
+             "-m", "pip", "list", "--format", "json", "--disable-pip-version-check"]).decode('ascii'))
     try:
         [package] = (package for package in js_packages
                      if package['name'] == name)
