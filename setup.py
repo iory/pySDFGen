@@ -54,6 +54,7 @@ setup_params = dict(
     packages=find_packages(),
     setup_requires=setup_requires,
     install_requires=install_requires,
+    include_package_data=True,
 )
 
 
