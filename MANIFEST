@@ -1,21 +1,21 @@
-.gitignore
-.gitmodules
-.travis.yml
-CMakeLists.txt
-MANIFEST
-README.md
-SDFGen/CMakeLists.txt
-SDFGen/README.md
-SDFGen/array1.h
-SDFGen/array2.h
-SDFGen/array3.h
-SDFGen/config.h.in
-SDFGen/hashgrid.h
-SDFGen/hashtable.h
-SDFGen/main.cpp
-SDFGen/makelevelset3.cpp
-SDFGen/makelevelset3.h
-SDFGen/util.h
-SDFGen/vec.h
-pysdfgen/__init__.py
-setup.py
+include .gitignore
+include .gitmodules
+include .travis.yml
+include CMakeLists.txt
+include MANIFEST
+include README.md
+include SDFGen/CMakeLists.txt
+include SDFGen/README.md
+include SDFGen/array1.h
+include SDFGen/array2.h
+include SDFGen/array3.h
+include SDFGen/config.h.in
+include SDFGen/hashgrid.h
+include SDFGen/hashtable.h
+include SDFGen/main.cpp
+include SDFGen/makelevelset3.cpp
+include SDFGen/makelevelset3.h
+include SDFGen/util.h
+include SDFGen/vec.h
+include pysdfgen/__init__.py
+include setup.py
