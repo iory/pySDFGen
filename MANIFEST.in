@@ -2,7 +2,7 @@ include .gitignore
 include .gitmodules
 include .travis.yml
 include CMakeLists.txt
-include MANIFEST
+include MANIFEST.in
 include README.md
 include SDFGen/CMakeLists.txt
 include SDFGen/README.md
