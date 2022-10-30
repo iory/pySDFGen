@@ -25,7 +25,6 @@ setup_requires = [
 ]
 
 install_requires = [
-    'scikit-build',
     'trimesh>=3.5.20'
 ]
 
@@ -68,7 +67,7 @@ def install_packages(*requirements):
 
 
 # https://github.com/skvark/opencv-python/blob/master/setup.py
-def get_or_install(name, version=None):
+def get_or_install_skbuild():
     """If a package is already installed, build against it. If not, install
 
     """
@@ -80,18 +79,12 @@ def get_or_install(name, version=None):
             [sys.executable,
              "-m", "pip", "list", "--format", "json",
              "--disable-pip-version-check"]).decode('ascii'))
-    try:
-        [package] = (package for package in js_packages
-                     if package['name'] == name)
-    except ValueError:
-        install_packages("%s==%s" % (name, version) if version else name)
-        return version
-    else:
-        return package['version']
+    if "scikit-build" not in js_packages:
+        install_packages("scikit-build!=0.16.0")
 
 
 def main():
-    get_or_install('scikit-build')
+    get_or_install_skbuild()
     import skbuild  # NOQA
 
     skbuild.setup(**setup_params)
