@@ -91,8 +91,8 @@ def mesh2sdf(mesh_filepath, dim=100, padding=5,
 
     if is_obj_file:
         # becuase the output destination of SDFGen can't be specified...
-        os.rename(default_sdf_filepath, sdf_filepath)
+        shutil.move(default_sdf_filepath, sdf_filepath)
     else:
-        os.rename(tmp_sdf_filepath, sdf_filepath)
+        shutil.move(tmp_sdf_filepath, sdf_filepath)
         shutil.rmtree(tmp_directory)
     return sdf_filepath
