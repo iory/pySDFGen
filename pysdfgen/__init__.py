@@ -86,8 +86,20 @@ def mesh2sdf(mesh_filepath, dim=100, padding=5,
          str(obj_filepath),
          str(dim),
          str(padding)],
-        stdout=DEVNULL)
-    p.wait()
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+
+    stdout, stderr = p.communicate()
+    stdout_decoded = stdout.decode('utf-8').strip()
+    stderr_decoded = stderr.decode('utf-8').strip()
+
+    if p.returncode != 0:
+        error_message = "SDFGen failed."
+        if stdout_decoded:
+            error_message += " stdout: '{}'".format(stdout_decoded)
+        if stderr_decoded:
+            error_message += " stderr: '{}'".format(stderr_decoded)
+        raise ValueError(error_message)
 
     if is_obj_file:
         # becuase the output destination of SDFGen can't be specified...
