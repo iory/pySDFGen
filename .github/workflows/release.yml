@@ -105,7 +105,6 @@ jobs:
     - name: Build
       run: |
         python setup.py sdist
-        python setup.py bdist_wheel
     - name: Upload to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
