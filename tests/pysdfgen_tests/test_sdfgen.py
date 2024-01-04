@@ -30,6 +30,13 @@ class TestSDFGen(unittest.TestCase):
         self.assertEqual(output_path, bunny_sdfpath)
         os.remove(bunny_sdfpath)
 
+    def test_invalid_arg_to_command(self):
+        if osp.exists(bunny_sdfpath):
+            os.remove(bunny_sdfpath)
+        # padding must be smaller than dim
+        with self.assertRaises(ValueError):
+            obj2sdf(bunny_objpath, dim=10, padding=10)
+
     def test_mesh2sdf(self):
         dim = 10
         if osp.exists(bunny_sdfpath):
