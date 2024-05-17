@@ -1,6 +1,6 @@
 # pySDFGen
 
-[![Build Status](https://github.com/iory/pysdfgen/workflows/Run%20Tests/badge.svg?branch=main)](https://github.com/iory/pysdfgen/actions)
+[![Build Status](https://github.com/iory/pysdfgen/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/iory/pysdfgen/actions)
 
 SDFGen for Python
 
