@@ -50,10 +50,11 @@ setup_params = dict(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
     ],
-    packages=find_packages(),
+    packages=find_packages(include=["pysdfgen", "pysdfgen.*"]),
+    package_data={'pysdfgen': ['__init__.py', 'SDFGen']},
     setup_requires=setup_requires,
     install_requires=install_requires,
-    include_package_data=True,
+    include_package_data=False,
 )
 
 

@@ -1,0 +1,4 @@
+include README.md
+include setup.py
+include CMakeLists.txt
+recursive-include SDFGen *
