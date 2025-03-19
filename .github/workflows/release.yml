@@ -93,6 +93,7 @@ jobs:
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
+    needs: auto-merge
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
