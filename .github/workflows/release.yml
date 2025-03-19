@@ -101,6 +101,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           submodules: true
       # Used to host cibuildwheel
       - uses: actions/setup-python@v5
