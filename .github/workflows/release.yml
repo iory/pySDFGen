@@ -1,88 +1,94 @@
-name: Release pysdfgen
+name: Release
 
 on:
-   push:
-     tags:
-       - 'v*'
+  workflow_run:
+    workflows: ["Run Tests"]
+    types:
+      - completed
 
 jobs:
-  formatting:
-    name: Check Formatting
-    runs-on: ubuntu-20.04
+  auto-merge:
+    runs-on: ubuntu-latest
+    outputs:
+      mergeResult: ${{ steps.merge.outputs.mergeResult }}
+      prLabels: ${{ steps.get_labels.outputs.labels }}
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.8
-    - name: Install Formatting
-      run: |
-        python -m pip install --upgrade pip
-        pip install hacking isort
-    - name: Check Formatting
-      run: |
-        flake8 .
-        grep -rlIP '[^\x00-\x7F]' pysdfgen | grep '\.pyx\?' | sort > unicode.out; grep -rlI '# -\*- coding: \(utf-8\|latin-1\) -\*-' pysdfgen | grep '\.pyx\?' | sort > coding.out; comm -23 unicode.out coding.out > test_code.out; cat test_code.out;  test \! -s test_code.out
-    - name: Check isort
-      run: |
-        isort -c .
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  tests-3x:
-    name: Run Unit Tests
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        python-version: [3.6.15, 3.8.16, 3.10.10]
-        os: [ubuntu-20.04]
+      - name: Get PR labels
+        id: get_labels
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prs = context.payload.workflow_run.pull_requests;
+            if (!prs || prs.length === 0) {
+              core.info("Could not find any pull requests in the workflow run.");
+              core.setOutput("labels", "[]");
+              return;
+            }
+            const prNumber = prs[0].number;
+            core.info(`Found PR number: ${prNumber}`);
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const labels = pr.labels.map(label => label.name);
+            core.info(`Retrieved labels: ${labels}`);
+            core.setOutput("labels", JSON.stringify(labels));
+
+      - name: Debug labels output
+        run: |
+          echo "Labels output: ${{ steps.get_labels.outputs.labels }}"
+
+      - name: Auto merge if auto-merge-ok label exists
+        id: merge
+        if: contains(fromJson(steps.get_labels.outputs.labels), 'auto-merge-ok')
+        uses: pascalgn/automerge-action@v0.16.3
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "auto-merge-ok"
+          MERGE_METHOD: squash
+          MERGE_DELETE_BRANCH: true
+
+  tag-release:
+    runs-on: ubuntu-latest
+    needs: auto-merge
+    if: ${{ needs.auto-merge.outputs.mergeResult == 'merged' && contains(fromJson(needs.auto-merge.outputs.prLabels || '[]'), 'release') }}
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Checkout submodules
-      shell: bash
-      run: |
-        git submodule sync --recursive
-        git submodule update --init --force --recursive
-    - name: Install Pytest
-      run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install pytest hacking
-    - name: Install pysdfgen
-      run: pip install .
-    - name: Run Pytest
-      run: pytest -v tests
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  tests-2x:
-    name: Run Unit Tests
-    runs-on: ubuntu-20.04
-    container:
-      image: python:2.7.18-buster
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install APT On Linux
-      run: |
-        apt-get update -qq -y
-        apt-get install -qq -y cmake
-    - name: Checkout submodules
-      shell: bash
-      run: |
-        git submodule sync --recursive
-        git submodule update --init --force --recursive
-    - name: Install Pytest
-      run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install pytest hacking
-    - name: Install pysdfgen
-      run: pip install .
-    - name: Run Pytest
-      run: pytest -v tests
+      - name: Debug outputs from auto-merge
+        run: |
+          echo "Merge Result: ${{ needs.auto-merge.outputs.mergeResult }}"
+          echo "PR Labels: ${{ needs.auto-merge.outputs.prLabels }}"
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install .[all]
+
+      - name: Get version from package
+        id: get_version
+        run: |
+          VERSION=$(python -c "import pysdfgen; print(pysdfgen.__version__)")
+          echo "Detected version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Tag and push release
+        run: |
+          git tag "v${{ steps.get_version.outputs.version }}"
+          git push origin "v${{ steps.get_version.outputs.version }}"
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -99,7 +105,7 @@ jobs:
       - uses: actions/setup-python@v5
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.22.0
+        run: python -m pip install cibuildwheel==2.16.2
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
@@ -114,7 +120,7 @@ jobs:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
 
   upload_pypi:
-    needs: [build_wheels]
+    needs: [build_wheels, tag-release]
     runs-on: ubuntu-latest
     environment: pypi
     steps:
