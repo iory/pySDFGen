@@ -5,7 +5,6 @@ import subprocess
 import tempfile
 import warnings
 
-import pkg_resources
 import trimesh
 
 
@@ -15,11 +14,31 @@ except ImportError:
     DEVNULL = open(os.devnull, 'wb')
 
 
-__version__ = pkg_resources.get_distribution('pysdfgen').version
-
+_version = None
+_SUBMODULES = [
+    "obj2sdf",
+    "mesh2sdf",
+]
+__all__ = _SUBMODULES
 
 SDFGen_executable = osp.join(
     osp.abspath(osp.dirname(__file__)), 'SDFGen')
+
+
+def __getattr__(name):
+    global _version
+    if name == "__version__":
+        if _version is None:
+            import pkg_resources
+            _version = pkg_resources.get_distribution(
+                'pysdfgen').version
+        return _version
+    raise AttributeError(
+        "module {} has no attribute {}".format(__name__, name))
+
+
+def __dir__():
+    return __all__ + ['__version__', '__file__']
 
 
 def obj2sdf(*args, **kwargs):
