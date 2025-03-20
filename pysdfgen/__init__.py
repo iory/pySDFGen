@@ -5,9 +5,6 @@ import subprocess
 import tempfile
 import warnings
 
-import pkg_resources
-import trimesh
-
 
 try:
     from subprocess import DEVNULL
@@ -15,11 +12,41 @@ except ImportError:
     DEVNULL = open(os.devnull, 'wb')
 
 
-__version__ = pkg_resources.get_distribution('pysdfgen').version
-
+_version = None
+_SUBMODULES = [
+    "obj2sdf",
+    "mesh2sdf",
+]
+__all__ = _SUBMODULES
 
 SDFGen_executable = osp.join(
     osp.abspath(osp.dirname(__file__)), 'SDFGen')
+
+_trimesh = None
+
+
+def _lazy_trimesh():
+    global _trimesh
+    if _trimesh is None:
+        import trimesh
+        _trimesh = trimesh
+    return _trimesh
+
+
+def __getattr__(name):
+    global _version
+    if name == "__version__":
+        if _version is None:
+            import pkg_resources
+            _version = pkg_resources.get_distribution(
+                'pysdfgen').version
+        return _version
+    raise AttributeError(
+        "module {} has no attribute {}".format(__name__, name))
+
+
+def __dir__():
+    return __all__ + ['__version__', '__file__']
 
 
 def obj2sdf(*args, **kwargs):
@@ -69,6 +96,7 @@ def mesh2sdf(mesh_filepath, dim=100, padding=5,
         tmp_obj_filepath = osp.join(tmp_directory, 'tmp.obj')
         tmp_sdf_filepath = osp.join(tmp_directory, 'tmp.sdf')
 
+        trimesh = _lazy_trimesh()
         mesh = trimesh.load_mesh(mesh_filepath)
         trimesh.exchange.export.export_mesh(mesh, tmp_obj_filepath)
         obj_filepath = tmp_obj_filepath
