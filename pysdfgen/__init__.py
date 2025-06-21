@@ -37,9 +37,14 @@ def __getattr__(name):
     global _version
     if name == "__version__":
         if _version is None:
-            import pkg_resources
-            _version = pkg_resources.get_distribution(
-                'pysdfgen').version
+            try:
+                import importlib.metadata
+                _version = importlib.metadata.version('pysdfgen')
+            except ImportError:
+                # Fallback for Python < 3.8
+                import pkg_resources
+                _version = pkg_resources.get_distribution(
+                    'pysdfgen').version
         return _version
     raise AttributeError(
         "module {} has no attribute {}".format(__name__, name))
