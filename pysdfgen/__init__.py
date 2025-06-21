@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import shutil
 import subprocess
+import sys
 import tempfile
 import warnings
 
@@ -13,6 +14,25 @@ except ImportError:
 
 
 _version = None
+
+
+def _get_version():
+    global _version
+    if _version is None:
+        try:
+            # Python 3.8+
+            import importlib.metadata
+            _version = importlib.metadata.version('pysdfgen')
+        except ImportError:
+            # Python < 3.8 fallback
+            import pkg_resources
+            _version = pkg_resources.get_distribution('pysdfgen').version
+    return _version
+
+
+# For Python 2.7 compatibility, explicitly define __version__
+if sys.version_info[0] == 2:
+    __version__ = _get_version()
 _SUBMODULES = [
     "obj2sdf",
     "mesh2sdf",
@@ -34,18 +54,8 @@ def _lazy_trimesh():
 
 
 def __getattr__(name):
-    global _version
     if name == "__version__":
-        if _version is None:
-            try:
-                import importlib.metadata
-                _version = importlib.metadata.version('pysdfgen')
-            except ImportError:
-                # Fallback for Python < 3.8
-                import pkg_resources
-                _version = pkg_resources.get_distribution(
-                    'pysdfgen').version
-        return _version
+        return _get_version()
     raise AttributeError(
         "module {} has no attribute {}".format(__name__, name))
 
