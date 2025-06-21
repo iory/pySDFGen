@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import unittest
 
+import pysdfgen
 from pysdfgen import mesh2sdf
 from pysdfgen import obj2sdf
 
@@ -90,3 +91,20 @@ class TestSDFGen(unittest.TestCase):
             dim=dim)
         self.assertEqual(another_output_path, another_gripper_sdfpath)
         self.assertTrue(osp.exists(another_output_path))
+
+
+class TestVersion(unittest.TestCase):
+
+    def test_version_attribute(self):
+        """Test that __version__ attribute is accessible and returns string."""
+        version = pysdfgen.__version__
+        self.assertIsInstance(version, str)
+        self.assertTrue(len(version) > 0)
+        # Version should contain digits and dots
+        self.assertTrue(any(c.isdigit() for c in version))
+
+    def test_version_consistency(self):
+        """Test that accessing __version__ multiple times returns the same."""
+        version1 = pysdfgen.__version__
+        version2 = pysdfgen.__version__
+        self.assertEqual(version1, version2)
