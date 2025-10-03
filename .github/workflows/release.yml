@@ -18,7 +18,7 @@ jobs:
 
       - name: Get PR labels
         id: get_labels
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const prs = context.payload.workflow_run.pull_requests;
@@ -70,21 +70,21 @@ jobs:
           echo "PR Labels: ${{ needs.auto-merge.outputs.prLabels }}"
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       - name: Install package
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install .[all]
+          pip install ".[all]"
 
       - name: Get version from package
         id: get_version
         run: |
-          VERSION=$(python -c "import pysdfgen; print(pysdfgen.__version__)")
+          VERSION="$(python -c "import pysdfgen; print(pysdfgen.__version__)")"
           echo "Detected version: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Tag and push release
         run: |
@@ -101,7 +101,7 @@ jobs:
           ref: main
           submodules: true
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - name: Install build tool
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     steps:
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - uses: actions/download-artifact@v4
