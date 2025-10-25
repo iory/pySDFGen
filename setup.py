@@ -44,10 +44,14 @@ setup_params = dict(
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
     ],
     packages=find_packages(include=["pysdfgen", "pysdfgen.*"]),
@@ -58,34 +62,7 @@ setup_params = dict(
 )
 
 
-# https://github.com/skvark/opencv-python/blob/master/setup.py
-def install_packages(*requirements):
-    # No more convenient way until PEP 518 is implemented;
-    # setuptools only handles eggs
-    subprocess.check_call(
-        [sys.executable, "-m", "pip", "install"] + list(requirements)
-    )
-
-
-# https://github.com/skvark/opencv-python/blob/master/setup.py
-def get_or_install_skbuild():
-    """If a package is already installed, build against it. If not, install
-
-    """
-    # Do not import 3rd-party modules into the current process
-    import json
-    js_packages = json.loads(
-        # valid names & versions are ASCII as per PEP 440
-        subprocess.check_output(
-            [sys.executable,
-             "-m", "pip", "list", "--format", "json",
-             "--disable-pip-version-check"]).decode('ascii'))
-    if "scikit-build" not in js_packages:
-        install_packages("scikit-build!=0.16.0")
-
-
 def main():
-    get_or_install_skbuild()
     import skbuild  # NOQA
 
     skbuild.setup(**setup_params)
