@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.4.6)
+cmake_minimum_required(VERSION 3.5)
 Project("SDFGen")
 
 # Set the build type.  Options are:
