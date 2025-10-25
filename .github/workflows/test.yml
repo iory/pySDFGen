@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v5
       with:
         python-version: 3.8
     - name: Install Formatting
@@ -26,7 +26,7 @@ jobs:
     - name: Check Formatting
       run: |
         flake8 .
-        grep -rlIP '[^\x00-\x7F]' pysdfgen | grep '\.pyx\?' | sort > unicode.out; grep -rlI '# -\*- coding: \(utf-8\|latin-1\) -\*-' pysdfgen | grep '\.pyx\?' | sort > coding.out; comm -23 unicode.out coding.out > test_code.out; cat test_code.out;  test \! -s test_code.out
+        grep -rlIP '[^\x00-\x7F]' pysdfgen | grep '\\.pyx\\?' | sort > unicode.out; grep -rlI '# -\\*- coding: \\(utf-8\\|latin-1\\) -\\*-' pysdfgen | grep '\\.pyx\\?' | sort > coding.out; comm -23 unicode.out coding.out > test_code.out; cat test_code.out;  test ! -s test_code.out
     - name: Check isort
       run: |
         isort -c .
@@ -41,7 +41,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Checkout submodules
@@ -64,10 +64,11 @@ jobs:
     strategy:
       matrix:
         # https://github.com/actions/runner-images
-        # Note: To test macOS-x with Intel architecture,
-        # you need to use the paid macOS-x-large runner, as macOS-x is grouped with ARM-based runners.
-        # https://docs.github.com/en/actions/concepts/runners/about-larger-runners
-        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-13, macos-latest]
+        # Note: macos-13 is deprecated and will be retired by December 4, 2025
+        # Using macos-15-intel for Intel x86_64 architecture testing
+        # macos-latest (ARM-based Apple Silicon) for general testing
+        # https://github.blog/changelog/2025-09-19-github-actions-macos-13-runner-image-is-closing-down/
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-15-intel, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
