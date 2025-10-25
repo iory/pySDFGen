@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "scikit-build!=0.16.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysdfgen"
+version = "0.2.1"
+description = "SDFGen for Python"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "iory", email = "ab.ioryz@gmail.com"}
+]
+keywords = ["sdf", "mesh", "3d"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+    "trimesh>=3.5.20"
+]
+requires-python = ">=3.7"
+
+[project.urls]
+Homepage = "https://github.com/iory/pySDFGen"
+Repository = "https://github.com/iory/pySDFGen"
+"Bug Tracker" = "https://github.com/iory/pySDFGen/issues"
+
+[tool.setuptools]
+packages = ["pysdfgen"]
+include-package-data = false
+
+[tool.setuptools.package-data]
+pysdfgen = ["__init__.py", "SDFGen"]
