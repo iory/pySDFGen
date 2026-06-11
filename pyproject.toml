@@ -39,6 +39,12 @@ Homepage = "https://github.com/iory/pySDFGen"
 Repository = "https://github.com/iory/pySDFGen"
 "Bug Tracker" = "https://github.com/iory/pySDFGen/issues"
 
+[tool.cibuildwheel]
+# 32-bit Windows builds fail on the windows-2025-vs2026 runner image
+skip = "*-win32"
+# PyPy wheels are opt-in since cibuildwheel 3.0 but were published for past releases
+enable = ["pypy"]
+
 [tool.setuptools]
 packages = ["pysdfgen"]
 include-package-data = false
