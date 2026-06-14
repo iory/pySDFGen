@@ -50,4 +50,4 @@ packages = ["pysdfgen"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-pysdfgen = ["__init__.py", "SDFGen"]
+pysdfgen = ["__init__.py", "SDFGen*"]

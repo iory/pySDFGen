@@ -41,6 +41,8 @@ __all__ = _SUBMODULES
 
 SDFGen_executable = osp.join(
     osp.abspath(osp.dirname(__file__)), 'SDFGen')
+if sys.platform == 'win32':
+    SDFGen_executable += '.exe'
 
 _trimesh = None
 
